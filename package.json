@@ -1,20 +1,16 @@
 {
   "dependencies": {
-    "@agentic/hacker-news": "^7.2.0",
     "@agentic/searxng": "^7.1.0",
     "@wechatferry/puppet": "^0.0.21",
-    "https-proxy-agent": "^7.0.5",
+    "jsdom": "^25.0.1",
     "openai": "^4.70.2",
+    "pdf-parse": "^1.1.1",
     "wechaty": "^1.20.2"
   },
-  "name": "wechatyferry",
+  "name": "wechatyferry-bot",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
-  "devDependencies": {
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
