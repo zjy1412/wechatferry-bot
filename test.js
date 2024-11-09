@@ -1,7 +1,7 @@
-import { SearxngService, type SearxngServiceConfig } from 'searxng';
+import { SearxngService } from 'searxng';
 
-const config: SearxngServiceConfig = {
-  baseURL: 'https://your-searxng-instance.com'
+const config = {
+  baseURL: 'https://searxng2.qunqin.org'
 };
 
 const searxngService = new SearxngService(config);
