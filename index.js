@@ -6,7 +6,7 @@ import { log } from './src/utils/logger.js';
 import { ChatHistoryManager } from './src/services/chatHistory.js';
 import { SearchService } from './src/services/searchService.js';
 import { PromptManager } from './src/services/promptManager.js';
-import { sys } from 'typescript';
+import { URLReaderService } from './src/services/urlReader.js';
 
 const model = config.openai.model;
 const openai = new OpenAI({
@@ -19,6 +19,7 @@ const bot = WechatyBuilder.build({ puppet });
 const promptManager = new PromptManager();
 const historyManager = new ChatHistoryManager(config.maxHistoryLength);
 const searchService = new SearchService(config.searchEngineURL);
+const urlReaderService = new URLReaderService();
 
 const tools = [
   {
@@ -38,6 +39,23 @@ const tools = [
         required: ["keywords"]
       }
     },
+  },
+  {
+    type: "function",
+    function: {
+      name: "read_url",
+      description: "Read and extract content from a URL (webpage or PDF)",
+      parameters: {
+        type: "object",
+        properties: {
+          url: {
+            type: "string",
+            description: "The URL to read (supports webpages and PDFs)"
+          }
+        },
+        required: ["url"]
+      }
+    }
   }
 ];
 
@@ -64,30 +82,37 @@ async function processMessage(userMessage, chatId) {
     const responseMessage = initialResponse.choices[0].message;
     
     if (responseMessage.tool_calls) {
-      const toolCall = responseMessage.tool_calls[0];
-      if (toolCall.function.name === 'search_internet') {
-        log('info', 'search_internet tool call detected');
-        const args = JSON.parse(toolCall.function.arguments);
-        const searchResults = await searchService.search(args.keywords);
+        const toolCall = responseMessage.tool_calls[0];
+        let toolResponse;
+
+        if (toolCall.function.name === 'search_internet') {
+            log('info', 'search_internet tool call detected');
+            const args = JSON.parse(toolCall.function.arguments);
+            toolResponse = await searchService.search(args.keywords);
+        } else if (toolCall.function.name === 'read_url') {
+            log('info', 'read_url tool call detected');
+            const args = JSON.parse(toolCall.function.arguments);
+            toolResponse = await urlReaderService.readURL(args.url);
+        }
+        // log('info', `Tool response: ${JSON.stringify(toolResponse)}`);
 
         const finalResponse = await openai.chat.completions.create({
-          messages: [
+            messages: [
             systemPrompt,
             ...history,
             responseMessage,
             {
-              role: 'tool',
-              content: JSON.stringify(searchResults),
-              tool_call_id: toolCall.id
+            role: 'tool',
+            content: JSON.stringify(toolResponse),
+            tool_call_id: toolCall.id
             }
-          ],
-          model: model,
+            ],
+            model: model,
         });
 
         const botReply = finalResponse.choices[0].message.content;
         historyManager.updateHistory(chatId, 'assistant', botReply);
         return botReply;
-      }
     }
 
     const secondResponse = await openai.chat.completions.create({

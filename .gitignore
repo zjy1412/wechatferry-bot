@@ -1,1 +1,12 @@
-node_modules
+node_modules/
+
+logs/
+
+system_prompts/*
+!system_prompts/default.txt
+!system_prompts/catgirl.txt
+
+pre_index.js
+test.js
+
+config_.json
