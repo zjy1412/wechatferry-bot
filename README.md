@@ -1,6 +1,6 @@
 # 简介
 
-这是基于[wechatyferry](https://github.com/wechatferry/wechatferry)开发的微信机器人，虽然使用的都是[wechaty](https://github.com/wechaty/wechaty)的`API`。写这个项目更多的是想试用`function calling`，这个功能比想象中要好用很多，我基于该功能和`searxng`搜索引擎实现了联网搜索功能，同时还实现了`URL`的读取。但是有一些由搜索引擎自身能力带来的不足，比如“每日新闻”，在网络搜索中并不会给你列出来今天发生的新闻，而全是新闻网站，并不能带来预期的信息，所以我个人认为联网应该要有更好的实现。
+这是基于[wechatyferry](https://github.com/wechatferry/wechatferry)开发的微信机器人，虽然使用的都是[wechaty](https://github.com/wechaty/wechaty)的`API`。写这个项目更多的是想试用`function calling`，这个功能比想象中要好用很多，我基于该功能和[searxng](https://github.com/searxng/searxng)搜索引擎实现了联网搜索功能，同时还实现了`URL`的读取。但是有一些由搜索引擎自身能力带来的不足，比如“每日新闻”，在网络搜索中并不会给你列出来今天发生的新闻，而全是新闻网站，并不能带来预期的信息，所以我个人认为联网应该要有更好的实现。
 
 ## 目录
 
@@ -46,6 +46,8 @@ npm install
 ```bash
 node index.js
 ```
+
+差点忘了，使用的一个库不知道为什么有测试没删导致报错，你可以根据报错指引去注释或删掉那个if语句。
 
 你可以在`system_prompts`文件夹下添加你自己的提示词，然后对机器人发送提示词的名字就可以切换提示词了。
 
