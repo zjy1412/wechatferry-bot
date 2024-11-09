@@ -2,7 +2,7 @@ node_modules/
 
 logs/
 
-system_prompts/*
+system_prompts/
 !system_prompts/default.txt
 !system_prompts/catgirl.txt
 
