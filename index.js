@@ -210,13 +210,13 @@ async function initializeBot() {
             const userMessage = text.replace(new RegExp(`@${botName}\\s?`, 'g'), '').trim();
             log('info', `Message in group with @: ${userMessage}`);
 
-            const reply = await processMessage(userMessage, room.id, talker.name());
+            const reply = await processMessage(userMessage, room.id, talker.name(), true);
             await msg.say(reply);
           }
         } else {
           log('info', `Message in private chat: ${text}`);
 
-          const reply = await processMessage(text, talker.id, talker.name());
+          const reply = await processMessage(text, talker.id, talker.name(), false);
           await msg.say(reply);
         }
       });

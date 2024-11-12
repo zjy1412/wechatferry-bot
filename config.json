@@ -1,0 +1,9 @@
+{
+  "openai": {
+    "model": "",
+    "baseURL": "", 
+    "apiKey": "" 
+  },
+  "maxHistoryLength": 5,
+  "searchEngineURL": ""
+}

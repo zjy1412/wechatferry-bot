@@ -109,14 +109,14 @@ export class ChatHistoryManager {
     this.stateManager.saveState('chat_history', state);
   }
 
-  async summarizeChat(chatId) {
+  async summarizeChat(chatId, isGroupChat = false) {
     try {
       // Get current and archived history
       const currentHistory = this.getHistory(chatId);
       const archivedHistory = this.loadArchivedHistory(chatId);
       
       // Combine histories
-      const allHistory = [...archivedHistory, ...currentHistory];
+      const allHistory = isGroupChat ? [...archivedHistory, ...currentHistory] : currentHistory;
       
       if (!allHistory || allHistory.length === 0) {
         return "没有可用的聊天记录可供总结。";
