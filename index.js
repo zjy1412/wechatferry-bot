@@ -1,3 +1,5 @@
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import { WechatferryPuppet } from '@wechatferry/puppet';
 import { WechatyBuilder } from 'wechaty';
 import OpenAI from 'openai';
@@ -182,6 +184,20 @@ process.on('exit', () => {
   historyManager.saveHistory();
 });
 
-bot.start()
-  .then(() => log('info', 'Bot started'))
-  .catch(error => log('error', `Failed to start bot: ${error}`));
+const argv = yargs(hideBin(process.argv))
+  .command('help', 'Display help information', () => {}, (argv) => {
+    console.log(`
+Usage: aider [options]
+
+Options:
+  --help  Display this help message
+    `);
+  })
+  .help()
+  .argv;
+
+if (!argv._.length) {
+  bot.start()
+    .then(() => log('info', 'Bot started'))
+    .catch(error => log('error', `Failed to start bot: ${error}`));
+}
