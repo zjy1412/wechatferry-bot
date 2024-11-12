@@ -56,6 +56,18 @@ const tools = [
         required: ["url"]
       }
     }
+  },
+  {
+    type: "function",
+    function: {
+      name: "get_today_news",
+      description: "Get today's news summary, only used when the message includes the word news or '新闻'",
+      parameters: {
+        type: "object",
+        properties: {},
+        required: []
+      }
+    }
   }
 ];
 
@@ -85,16 +97,25 @@ async function processMessage(userMessage, chatId) {
         const toolCall = responseMessage.tool_calls[0];
         let toolResponse;
 
-        if (toolCall.function.name === 'search_internet') {
-            log('info', 'search_internet tool call detected');
-            const args = JSON.parse(toolCall.function.arguments);
-            toolResponse = await searchService.search(args.keywords);
-        } else if (toolCall.function.name === 'read_url') {
-            log('info', 'read_url tool call detected');
-            const args = JSON.parse(toolCall.function.arguments);
-            toolResponse = await urlReaderService.readURL(args.url);
+        try {
+          if (toolCall.function.name === 'search_internet') {
+              log('info', 'search_internet tool call detected');
+              const args = JSON.parse(toolCall.function.arguments);
+              toolResponse = await searchService.search(args.keywords);
+          } else if (toolCall.function.name === 'read_url') {
+              log('info', 'read_url tool call detected');
+              const args = JSON.parse(toolCall.function.arguments);
+              toolResponse = await urlReaderService.readURL(args.url);
+          } else if (toolCall.function.name === 'get_today_news') {
+            log('info', 'get_today_news tool call detected');
+            toolResponse = await urlReaderService.readURL('https://api.lbbb.cc/api/60miao');
+          }
+        } catch (error) {
+          log('error', `Tool execution failed: ${error}`);
+          return `工具执行失败: ${error.message}`;
         }
-        // log('info', `Tool response: ${JSON.stringify(toolResponse)}`);
+
+        log('info', `Tool response: ${JSON.stringify(toolResponse)}`);
 
         const finalResponse = await openai.chat.completions.create({
             messages: [
