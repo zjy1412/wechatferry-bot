@@ -40,9 +40,7 @@ export class ChatHistoryManager {
       this.saveArchivedHistory(chatId, archivedHistory);
     }
 
-    if (history.length % 5 === 0) {
-      this.saveHistory();
-    }
+    this.saveHistory();
   }
 
   getHistory(chatId) {
