@@ -100,13 +100,9 @@ async function processMessage(userMessage, chatId, username = '') {
     historyManager.updateHistory(chatId, 'user', messageContent, username);
     const history = historyManager.getHistory(chatId);
 
-    const initialResponse = await openai.chat.completions.create({
-      messages: [
-        { role: 'user', content: messageContent }
-      ],
-      model: model,
-      tools: tools
-    });
+    const initialResponse = await this.createChatCompletion([
+      { role: 'user', content: messageContent }
+    ], tools);
 
     const responseMessage = initialResponse.choices[0].message;
     
@@ -134,40 +130,34 @@ async function processMessage(userMessage, chatId, username = '') {
 
       log('info', `Tool response: ${JSON.stringify(toolResponse)}`);
 
-      const finalResponse = await openai.chat.completions.create({
-        messages: [
-          systemPrompt,
-          ...history,
-          responseMessage,
-          {
-            role: 'tool',
-            content: JSON.stringify(toolResponse),
-            tool_call_id: toolCall.id
-          }
-        ],
-        model: model,
-      });
+      const finalResponse = await this.createChatCompletion([
+        systemPrompt,
+        ...history,
+        responseMessage,
+        {
+          role: 'tool',
+          content: JSON.stringify(toolResponse),
+          tool_call_id: toolCall.id
+        }
+      ]);
 
       const botReply = finalResponse.choices[0].message.content;
       historyManager.updateHistory(chatId, 'assistant', botReply);
       return botReply;
     }
 
-    const secondResponse = await openai.chat.completions.create({
-      messages: [
-        systemPrompt,
-        ...history,
-        { role: 'user', content: messageContent }
-      ],
-      model: model,
-    });
-    
+    const secondResponse = await this.createChatCompletion([
+      systemPrompt,
+      ...history,
+      { role: 'user', content: messageContent }
+    ]);
+
     const botReply = secondResponse.choices[0].message.content;
     historyManager.updateHistory(chatId, 'assistant', botReply);
     return botReply;
   } catch (error) {
-    log('error', `Error processing message: ${error}`);
-    return '抱歉，我目前无法回答您的问题。';
+    log('error', `Error processing message: ${error}`, { chatId, username });
+    return `抱歉，我目前无法回答您的问题。错误详情: ${error.message}`;
   }
 }
 
@@ -209,3 +199,10 @@ process.on('SIGTERM', async () => {
 bot.start()
   .then(() => log('info', 'Bot started'))
   .catch(error => log('error', `Failed to start bot: ${error}`));
+async createChatCompletion(messages, tools = []) {
+  return await openai.chat.completions.create({
+    messages,
+    model: model,
+    tools: tools
+  });
+}
