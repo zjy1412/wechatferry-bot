@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "@agentic/searxng": "^7.1.0",
-    "@elastic/elasticsearch": "^8.15.1",
     "@wechatferry/agent": "^0.0.21",
     "@wechatferry/puppet": "^0.0.21",
     "jsdom": "^25.0.1",

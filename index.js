@@ -39,7 +39,6 @@ async function initializeBot() {
       const promptManager = new PromptManager();
       const historyManager = new ChatHistoryManager(config.maxHistoryLength);
       const searchService = new SearchService(config.searchEngineURL);
-      const fileReaderService = new FileReaderService();
       const urlReaderService = new URLReaderService();
 
       // Initialize enabled tools based on config
