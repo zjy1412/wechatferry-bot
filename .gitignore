@@ -14,5 +14,3 @@ config_.json
 .env
 
 data/
-
-logs/
