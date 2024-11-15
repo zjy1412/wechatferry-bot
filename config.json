@@ -1,0 +1,16 @@
+{
+  "openai": {
+    "model": "",
+    "baseURL": "",
+    "apiKey": ""
+  },
+  "maxHistoryLength": 5,
+  "searchEngineURL": "",
+  "archiveExpirationTime": 86400000,
+  "features": {
+    "searchEnabled": true,
+    "urlReaderEnabled": true,
+    "chatHistoryEnabled": true,
+    "newsEnabled": true
+  }
+}
