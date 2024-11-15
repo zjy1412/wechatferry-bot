@@ -9,11 +9,7 @@ import { ChatHistoryManager } from './src/services/chatHistory.js';
 import { SearchService } from './src/services/searchService.js';
 import { PromptManager } from './src/services/promptManager.js';
 import { URLReaderService } from './src/services/urlReader.js';
-<<<<<<< HEAD
-import { FileReaderService } from './src/services/fileReaderService.js';
-=======
 import path from 'path';
->>>>>>> temp
 
 const model = config.openai?.model;
 const openai = new OpenAI({
@@ -265,16 +261,7 @@ async function initializeBot() {
         } else {
           log('info', `Message in private chat: ${text}`);
 
-<<<<<<< HEAD
-          if (msg.type() === bot.Message.Type.Attachment) {
-            const file = msg.toFileBox();
-            const reply = await fileReaderService.handleFileMessage(file);
-            await msg.say(reply);
-          } else {
-            const reply = await processMessage(text, talker.id, talker.name());
-=======
           const reply = await processMessage(text, talker.id, talker.name(), false);
->>>>>>> temp
           await msg.say(reply);
         }
       });
