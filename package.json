@@ -1,11 +1,16 @@
 {
   "dependencies": {
     "@agentic/searxng": "^7.1.0",
+    "@elastic/elasticsearch": "^8.15.1",
+    "@wechatferry/agent": "^0.0.21",
     "@wechatferry/puppet": "^0.0.21",
     "jsdom": "^25.0.1",
+    "mammoth": "^1.8.0",
     "openai": "^4.70.2",
     "pdf-parse": "^1.1.1",
-    "wechaty": "^1.20.2"
+    "tesseract.js": "^5.1.1",
+    "wechaty": "^1.20.2",
+    "xlsx": "^0.18.5"
   },
   "name": "wechatyferry-bot",
   "version": "1.0.0",
@@ -17,5 +22,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }

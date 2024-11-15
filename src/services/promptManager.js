@@ -1,12 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import { log } from '../utils/logger.js';
+import { StateManager } from './stateManager.js';
 
 export class PromptManager {
   constructor() {
     this.systemPrompts = new Map();
     this.userPrompts = new Map();
+    this.stateManager = new StateManager();
     this.loadSystemPrompts();
+    this.loadUserPromptState();
   }
 
   loadSystemPrompts() {
@@ -26,6 +29,22 @@ export class PromptManager {
     }
   }
 
+  loadUserPromptState() {
+    const savedState = this.stateManager.loadState('prompt_state');
+    if (savedState) {
+      this.userPrompts = new Map(savedState.userPrompts);
+      log('info', 'Loaded user prompt state');
+    }
+  }
+
+  saveUserPromptState() {
+    const state = {
+      userPrompts: Array.from(this.userPrompts.entries()),
+      timestamp: Date.now()
+    };
+    this.stateManager.saveState('prompt_state', state);
+  }
+
   getSystemPrompt(chatId, text) {
     if (!text || typeof text !== 'string') {
       return this.getDefaultPrompt();
@@ -35,11 +54,13 @@ export class PromptManager {
     
     if (firstWord && firstWord.toLowerCase() === 'default') {
       this.userPrompts.delete(chatId);
+      this.saveUserPromptState();
       return this.getDefaultPrompt();
     }
 
     if (firstWord && this.systemPrompts.has(firstWord)) {
       this.userPrompts.set(chatId, firstWord);
+      this.saveUserPromptState();
       return {
         role: 'system',
         content: this.prependCurrentDate(this.systemPrompts.get(firstWord))
