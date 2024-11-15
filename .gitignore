@@ -10,3 +10,9 @@ pre_index.js
 test.js
 
 config_.json
+.aider*
+.env
+
+data/
+
+logs/
